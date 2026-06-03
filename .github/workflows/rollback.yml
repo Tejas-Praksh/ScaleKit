@@ -1,0 +1,52 @@
+name: Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Rollback reason'
+        required: true
+        type: string
+
+jobs:
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Log rollback
+        run: |
+          echo "⚠️ ROLLBACK INITIATED"
+          echo "Reason: ${{ github.event.inputs.reason }}"
+          echo "Triggered by: ${{ github.actor }}"
+          echo "Time: $(date -u)"
+
+      - name: Trigger rollback on Render
+        run: |
+          echo "Triggering previous deployment on Render..."
+          # Render doesn't have direct rollback API. Reverting commit and pushing is recommended.
+          echo "To complete rollback, revert the offending commit and push to main."
+
+      - name: Create rollback issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🔴 ROLLBACK: ' + context.payload.inputs.reason,
+              body: `
+                ## Rollback Details
+                - **Triggered by:** @${context.actor}
+                - **Reason:** ${context.payload.inputs.reason}
+                - **Time:** ${new Date().toISOString()}
+                - **Commit:** ${context.sha}
+
+                ## Action Items
+                - [ ] Investigate root cause
+                - [ ] Fix the issue
+                - [ ] Re-deploy when ready
+              `,
+              labels: ['rollback', 'incident', 'high-priority']
+            })

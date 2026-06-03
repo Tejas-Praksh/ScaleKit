@@ -1,0 +1,40 @@
+# Build artifacts
+target/
+*.class
+*.jar
+
+# Documentation
+*.md
+docs/
+
+# VCS
+.git/
+.gitignore
+.gitattributes
+
+# Environment files - NEVER bake secrets into image
+.env
+.env.*
+
+# K8s and monitoring configs (not needed at build time)
+k8s/
+monitoring/
+prometheus/
+
+# Logs
+*.log
+logs/
+
+# Frontend
+scalekit-frontend/node_modules/
+scalekit-frontend/dist/
+scalekit-frontend/.next/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

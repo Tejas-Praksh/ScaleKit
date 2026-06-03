@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: scalekit-config
+  namespace: scalekit
+data:
+  SPRING_PROFILES_ACTIVE: "prod"
+  APP_BASE_URL: "https://scalekit.app"
+  REDIS_PORT: "6379"
+  REDIS_SSL: "true"
+  SERVER_PORT: "8080"
+  JAVA_OPTS: >-
+    -XX:+UseContainerSupport
+    -XX:MaxRAMPercentage=75.0
+    -XX:+ExitOnOutOfMemoryError

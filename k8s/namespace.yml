@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: scalekit
+  labels:
+    app: scalekit
+    environment: production

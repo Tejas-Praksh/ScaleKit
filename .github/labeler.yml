@@ -1,0 +1,18 @@
+feature:
+  - src/main/**/*.java
+
+tests:
+  - src/test/**/*.java
+
+docs:
+  - docs/**
+  - '**/*.md'
+
+frontend:
+  - scalekit-frontend/**
+
+devops:
+  - .github/**
+  - Dockerfile
+  - docker-compose.yml
+  - k8s/**

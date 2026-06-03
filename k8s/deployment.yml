@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scalekit-app
+  namespace: scalekit
+  labels:
+    app: scalekit
+    version: "1.0.0"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: scalekit
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # Allow 1 extra pod during rollout
+      maxUnavailable: 0  # Zero downtime: always keep 2 pods running
+  template:
+    metadata:
+      labels:
+        app: scalekit
+        version: "1.0.0"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/actuator/prometheus"
+    spec:
+      serviceAccountName: scalekit-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+        - name: scalekit
+          image: scalekit-app:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            - configMapRef:
+                name: scalekit-config
+            - secretRef:
+                name: scalekit-secrets
+          resources:
+            requests:
+              memory: "256Mi"  # Guaranteed memory for scheduling
+              cpu: "250m"      # 0.25 CPU cores guaranteed
+            limits:
+              memory: "512Mi"  # Hard cap — OOMKilled if exceeded
+              cpu: "500m"      # 0.5 CPU cores max
+
+          # ── Startup Probe ────────────────────────────────────────────────────
+          # "Is the app done starting up?"
+          # Runs until it passes, then hands off to liveness and readiness.
+          # Allows up to 5 minutes (30 checks × 10s) for slow JVM startup.
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 30   # 30 × 10s = 5 minutes max startup time
+            timeoutSeconds: 5
+
+          # ── Liveness Probe ───────────────────────────────────────────────────
+          # "Is the app still alive?"
+          # If this fails: K8s kills and restarts the pod.
+          # Only checks JVM health — NOT database connectivity.
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            periodSeconds: 30
+            failureThreshold: 3
+            timeoutSeconds: 5
+
+          # ── Readiness Probe ──────────────────────────────────────────────────
+          # "Is the app ready to serve traffic?"
+          # If this fails: pod is removed from load balancer (but NOT restarted).
+          # Checks all dependencies: DB, Redis, etc.
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+            timeoutSeconds: 5
+
+          lifecycle:
+            preStop:
+              exec:
+                # Give the load balancer 5 seconds to deregister this pod
+                # before the JVM starts shutting down.
+                command: ["sh", "-c", "sleep 5"]
+
+      terminationGracePeriodSeconds: 60  # Allow 60s for in-flight requests to complete

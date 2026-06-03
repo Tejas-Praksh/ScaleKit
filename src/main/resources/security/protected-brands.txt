@@ -1,0 +1,17 @@
+# Protected brand names
+# Used for phishing detection
+paypal
+amazon
+google
+facebook
+apple
+microsoft
+netflix
+instagram
+twitter
+youtube
+linkedin
+github
+dropbox
+stripe
+coinbase

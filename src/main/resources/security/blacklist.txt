@@ -1,0 +1,12 @@
+# ScaleKit URL Blacklist
+# Format: one domain per line
+# Lines starting with # are comments
+malware-example.com
+phishing-test.net
+spam-domain.org
+fake-paypal.com
+login-amazon-verify.com
+bit.ly
+tinyurl.com
+malware-test.com
+phishing-example.com

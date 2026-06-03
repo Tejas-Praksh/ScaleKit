@@ -1,0 +1,115 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: scalekit
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ''
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema.sql
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 25
+        order_inserts: true
+        order_updates: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:redis123}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 10
+          min-idle: 5
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus,info
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: scalekit
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tryItOutEnabled: true
+    operationsSorter: method
+
+logging:
+  level:
+    root: INFO
+    com.scalekit: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+analytics:
+  executor:
+    core-pool-size: 5
+    max-pool-size: 20
+    queue-capacity: 1000
+  retention-days: 90
+  cache:
+    summary-ttl-seconds: 300
+    global-ttl-seconds: 600
+  real-time:
+    minute-window: 60
+    hour-window: 3600
+
+rate-limit:
+  endpoints:
+    url-create:
+      requests-per-minute: 60
+      burst-size: 20
+      algorithm: TOKEN_BUCKET
+      identifier-type: IP
+    url-redirect:
+      requests-per-minute: 600
+      burst-size: 100
+      algorithm: TOKEN_BUCKET
+      identifier-type: IP
+    url-bulk:
+      requests-per-minute: 10
+      burst-size: 5
+      algorithm: TOKEN_BUCKET
+      identifier-type: IP
+    api-global:
+      requests-per-minute: 1000
+      burst-size: 200
+      algorithm: TOKEN_BUCKET
+      identifier-type: GLOBAL
+    safety-check:
+      requests-per-minute: 30
+      burst-size: 10
+      algorithm: TOKEN_BUCKET
+      identifier-type: IP
+

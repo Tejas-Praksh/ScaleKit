@@ -1,0 +1,143 @@
+version: '3.8'
+
+services:
+
+  # ──────────────────────────────────────────────────────────────────
+  # ScaleKit Application
+  # ──────────────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: scalekit-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/scalekit
+      POSTGRES_USER: scalekit
+      POSTGRES_PASSWORD: scalekit123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: redis123
+      REDIS_SSL: "false"
+      APP_BASE_URL: http://localhost:8080
+      APP_SECURITY_ADMIN_API_KEY: dev-key-change-in-prod
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    networks:
+      - scalekit-network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  # ──────────────────────────────────────────────────────────────────
+  # PostgreSQL Database
+  # ──────────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: scalekit-postgres
+    environment:
+      POSTGRES_DB: scalekit
+      POSTGRES_USER: scalekit
+      POSTGRES_PASSWORD: scalekit123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/main/resources/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scalekit -d scalekit"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - scalekit-network
+
+  # ──────────────────────────────────────────────────────────────────
+  # Redis Cache & Rate Limiting
+  # ──────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: scalekit-redis
+    command: >
+      redis-server
+      --requirepass redis123
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redis123", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - scalekit-network
+
+  # ──────────────────────────────────────────────────────────────────
+  # Prometheus Metrics Collection
+  # ──────────────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: scalekit-prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=7d'
+    restart: unless-stopped
+    networks:
+      - scalekit-network
+
+  # ──────────────────────────────────────────────────────────────────
+  # Grafana Dashboards
+  # ──────────────────────────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: scalekit-grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: grafana-clock-panel
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - scalekit-network
+
+networks:
+  scalekit-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
