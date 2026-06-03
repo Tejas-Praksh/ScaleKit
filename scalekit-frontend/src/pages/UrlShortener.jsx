@@ -18,7 +18,8 @@ import {
   Globe,
   Smartphone,
   Info,
-  AlertCircle
+  AlertCircle,
+  RefreshCw
 } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
@@ -63,7 +64,7 @@ const UrlShortener = () => {
 
   // API hooks
   const { loading: createLoading, error: createError, execute: runCreate } = useApi(apiService.createUrl);
-  const { loading: qrLoading, execute: fetchQr } = useApi(apiService.getQrCode);
+  const { loading: qrLoading, execute: fetchQr } = useApi(() => Promise.resolve({ success: false }));
   const { loading: analyticsLoading, execute: fetchAnalytics } = useApi(apiService.getUrlAnalytics);
 
   // ── Copy Short URL Helper ─────────────────────────────────────────────────

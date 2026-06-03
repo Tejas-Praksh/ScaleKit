@@ -43,7 +43,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchLocks = async () => {
       try {
-        const res = await apiService.active();
+        const res = await apiService.lockGetActive();
         if (res.data?.success) {
           setActiveLocksCount(res.data.data.length);
         }
@@ -260,7 +260,7 @@ const Dashboard = () => {
         {/* Circuit Breakers */}
         <Card title="Circuit Breakers" subtitle="Route failure tripwires">
           <div className="space-y-3.5 mt-2">
-            {snapshot.circuitBreakerStats && Object.keys(snapshot.circuitBreakerStats).length > 0 ? (
+            {snapshot?.circuitBreakerStats && Object.keys(snapshot.circuitBreakerStats).length > 0 ? (
               Object.entries(snapshot.circuitBreakerStats).map(([name, cb]) => (
                 <div key={name} className="flex justify-between items-center border-b border-[#374151]/50 pb-2.5 last:border-0 last:pb-0">
                   <div className="flex flex-col">
