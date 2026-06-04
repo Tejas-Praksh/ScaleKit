@@ -329,27 +329,11 @@ bash performance/scripts/run-benchmarks.sh
 
 ---
 
-## 💼 Resume Bullets
-
-**ScaleKit — Distributed Systems Showcase Monolith**
-*GitHub: github.com/{username}/ScaleKit | Live Dashboard: scalekit.vercel.app*
-- Implemented **8 distributed systems algorithms** from scratch in Java 21, including Token Bucket, Sliding Window, LRU/LFU caches, Bloom Filter, Consistent Hashing, Redlock, and Leader Election, replicating core patterns from DynamoDB and Cassandra.
-- Designed a URL shortener handling **5,000+ req/sec** with **94% L1/L2 cache hit rate**, achieving a **p99 redirect latency of under 8ms** backed by async PostgreSQL batching.
-- Prevented rate-limiting write races by implementing Token Bucket and Sliding Window algorithms inside atomic **Redis Lua scripts**, verified via a concurrent test suite of 100 competing threads.
-- Built a custom **Bloom Filter** showing a **0.089% false positive rate** at 100k items, reducing key-existence memory footprint by **97%** compared to a Java HashSet.
-- Compiled comprehensive engineering documentation including high/low-level designs, architecture logs, capacity planning math, and a structured system design interview guide.
-- Maintained **80%+ test coverage** across **370+ unit and integration tests** verifying correctness, failovers, concurrency, and thread safety.
-
----
-
 ## 👨‍💻 Author
 
 **Tejas** — Java Backend Developer  
-*3rd Year Chemical Engineering @ RGIPT (Pivoting to Software Engineering)*
 
 - **LinkedIn:** [linkedin.com/in/tejas-acharya/](https://linkedin.com/in/tejas-acharya/)
 - **GitHub:** [github.com/{username}](https://github.com/{username})
-- **WealthSense Live:** [wealthsense-app.vercel.app](https://wealthsense-app.vercel.app)
-
 ---
 *Built to demonstrate that understanding WHY algorithms work matters more than knowing THAT they exist.*
