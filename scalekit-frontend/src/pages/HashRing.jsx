@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import * as d3 from 'd3';
 import {
-  Plus, Trash2, Hash, Server, ArrowRightLeft, RefreshCw,
+  Plus, Trash2, Hash, Server, ArrowRightLeft, RefreshCcw,
   Circle, Target, AlertTriangle, Search
 } from 'lucide-react';
 import Card from '../components/ui/Card';

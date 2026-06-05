@@ -19,7 +19,7 @@ import {
   Smartphone,
   Info,
   AlertCircle,
-  RefreshCw
+  RefreshCcw
 } from 'lucide-react';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
@@ -485,7 +485,7 @@ const UrlShortener = () => {
           <Card title="Top 10 Performing URLs" subtitle="Ranking most accessed links by click volume">
             <div className="absolute top-6 right-6">
               <Button variant="outline" className="py-1 h-8" onClick={loadTopUrls}>
-                <RefreshCw size={14} className="mr-1.5" /> Refresh
+                <RefreshCcw size={14} className="mr-1.5" /> Refresh
               </Button>
             </div>
 

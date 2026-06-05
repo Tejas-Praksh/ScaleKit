@@ -6,7 +6,11 @@ import {
   Database, 
   Lock, 
   AlertTriangle, 
-  RefreshCw,
+  Trash2, 
+  Hash, 
+  Server, 
+  ArrowRightLeft, 
+  RefreshCcw,
   Sparkles,
   Layers,
   ArrowRight,
@@ -106,7 +110,7 @@ const Dashboard = () => {
         <div className="flex flex-col gap-2">
           <p>Failed to connect to the ScaleKit distributed systems backend. Please ensure the Spring Boot server is running on port 8080.</p>
           <Button variant="outline" className="w-fit" onClick={refresh}>
-            <RefreshCw size={14} className="mr-2" /> Retry Connection
+            <RefreshCcw size={14} className="mr-2" /> Retry Connection
           </Button>
         </div>
       </Alert>
@@ -148,7 +152,7 @@ const Dashboard = () => {
     { 
       name: 'Consistent Hashing', 
       path: '/hash-ring', 
-      icon: RefreshCw, 
+      icon: RefreshCcw, 
       status: hashRing.nodeCount === 0 ? 'DANGER' : 'SAFE', 
       desc: 'Dynamic hash ring balance' 
     },
