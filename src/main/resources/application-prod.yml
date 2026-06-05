@@ -1,11 +1,21 @@
 spring:
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
   jpa:
-    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
+    show-sql: false
     properties:
       hibernate:
         format_sql: false
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema.sql
 
 logging:
   level:
