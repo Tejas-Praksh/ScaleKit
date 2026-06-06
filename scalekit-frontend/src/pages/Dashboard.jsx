@@ -106,9 +106,9 @@ const Dashboard = () => {
 
   if (error && !snapshot) {
     return (
-      <Alert type="error" message="Connection Error" className="my-6">
+      <Alert type="warning" message="Server Warming Up" className="my-6">
         <div className="flex flex-col gap-2">
-          <p>Failed to connect to the ScaleKit distributed systems backend. Please ensure the Spring Boot server is running on port 8080.</p>
+          <p>The backend server is waking up — this takes about 30–60 seconds on the free hosting tier. Please click retry in a moment!</p>
           <Button variant="outline" className="w-fit" onClick={refresh}>
             <RefreshCcw size={14} className="mr-2" /> Retry Connection
           </Button>
