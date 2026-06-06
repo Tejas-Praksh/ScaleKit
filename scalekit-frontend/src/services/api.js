@@ -4,7 +4,7 @@ const BASE_URL = import.meta.env.VITE_API_URL || '';
 
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 15000,
+  timeout: 60000, // 60s timeout — Render cold starts can take 30-60s
   headers: {
     'Content-Type': 'application/json'
   }
@@ -19,10 +19,31 @@ api.interceptors.request.use((config) => {
   } catch (e) {
     config.headers['X-Correlation-ID'] = 'fallback-correlation-id';
   }
+  // Track retry count
+  config.__retryCount = config.__retryCount || 0;
   return config;
 }, (error) => {
   return Promise.reject(error);
 });
+
+// Auto-retry on network errors (handles Render free-tier cold starts)
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const config = error.config;
+    // Only retry on network errors or 5xx, not on 4xx client errors
+    const isRetryable = !error.response || error.response.status >= 500;
+    
+    if (isRetryable && config && config.__retryCount < 4) {
+      config.__retryCount += 1;
+      // Exponential backoff: 3s, 6s, 12s, 24s — total ~45s wait
+      const delay = 3000 * Math.pow(2, config.__retryCount - 1);
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      return api(config);
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Centralized API functions
 export const apiService = {

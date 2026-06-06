@@ -99,7 +99,8 @@ const Dashboard = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
         <Spinner size="lg" />
-        <p className="text-sm text-[#9CA3AF] animate-pulse">Aggregating distributed systems telemetry...</p>
+        <p className="text-sm text-[#9CA3AF] animate-pulse">Connecting to backend & loading dashboard data...</p>
+        <p className="text-xs text-[#6B7280]">First load may take up to 60 seconds while the server starts up</p>
       </div>
     );
   }
