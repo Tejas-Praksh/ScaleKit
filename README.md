@@ -3,7 +3,7 @@
 
 > "Not just algorithms. System design thinking made tangible."
 
-![CI](https://github.com/your-username/ScaleKit/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/Tejas-Praksh/ScaleKit/actions/workflows/ci.yml/badge.svg)
 
 ---
 
@@ -13,8 +13,8 @@ ScaleKit is a full‑stack toolkit that showcases core distributed‑systems pat
 ---
 
 ### 🚀 Live Demo
-- **Frontend:** https://scalekit-frontend.vercel.app (replace with your Vercel URL after deployment)
-- **Backend API:** https://scalekit-backend.onrender.com (replace with your Render URL after deployment)
+- **Frontend:** https://scale-kit-iota.vercel.app
+- **Backend API:** https://scalekit-api.onrender.com
 
 ---
 
