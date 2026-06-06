@@ -21,6 +21,6 @@ public class RootController {
                 "status", "running",
                 "timestamp", Instant.now().toString(),
                 "docs", "/swagger-ui/index.html"
-        ));
+        ), "ScaleKit API is running");
     }
 }
