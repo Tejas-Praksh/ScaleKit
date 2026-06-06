@@ -35,3 +35,20 @@ services:
         value: https://scalekit-api.onrender.com
       - key: APP_SECURITY_ADMIN_API_KEY
         sync: false
+
+  - type: web
+    name: scalekit-frontend
+    env: static
+    buildCommand: cd scalekit-frontend && npm install && npm run build
+    staticPublishPath: ./scalekit-frontend/dist
+    plan: free
+    region: singapore
+    autoDeploy: true
+    pullRequestPreviewsEnabled: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: https://scalekit-api.onrender.com
