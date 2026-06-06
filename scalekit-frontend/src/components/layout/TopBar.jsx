@@ -41,7 +41,7 @@ const TopBar = ({ onMenuClick, alertsCount = 0, isConnected = true }) => {
             "flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all duration-300",
             isConnected 
               ? "bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20" 
-              : "bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20"
+              : "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20"
           )}
         >
           {isConnected ? (
@@ -51,8 +51,8 @@ const TopBar = ({ onMenuClick, alertsCount = 0, isConnected = true }) => {
             </>
           ) : (
             <>
-              <WifiOff size={14} />
-              <span>OFFLINE</span>
+              <WifiOff size={14} className="animate-pulse" />
+              <span>CONNECTING...</span>
             </>
           )}
         </div>

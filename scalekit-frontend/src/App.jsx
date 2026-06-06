@@ -18,18 +18,27 @@ function App() {
 
   // Background status check for global TopBar health summary
   useEffect(() => {
+    let failCount = 0;
+    const MAX_FAILS_BEFORE_OFFLINE = 3; // tolerate 3 failures (cold start grace)
+
     const checkHealth = async () => {
       try {
         const res = await apiService.getDashboard();
+        failCount = 0;
         setIsConnected(true);
         setAlertsCount(res.data?.data?.activeAlerts?.length || 0);
       } catch (err) {
-        setIsConnected(false);
+        failCount++;
+        // Only mark offline after multiple consecutive failures
+        // This prevents false "OFFLINE" during Render cold starts
+        if (failCount >= MAX_FAILS_BEFORE_OFFLINE) {
+          setIsConnected(false);
+        }
         setAlertsCount(0);
       }
     };
     checkHealth();
-    const id = setInterval(checkHealth, 5000);
+    const id = setInterval(checkHealth, 30000); // every 30s instead of 5s
     return () => clearInterval(id);
   }, []);
 
