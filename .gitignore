@@ -47,6 +47,8 @@ Thumbs.db
 
 # Environment variables
 .env
+!.env.production
+!scalekit-frontend/.env.production
 
 # Application
 logs/
