@@ -97,10 +97,17 @@ const Dashboard = () => {
 
   if (loading && !snapshot) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center max-w-md mx-auto">
         <Spinner size="lg" />
-        <p className="text-sm text-[#9CA3AF] animate-pulse">Connecting to backend & loading dashboard data...</p>
-        <p className="text-xs text-[#6B7280]">First load may take up to 60 seconds while the server starts up</p>
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold text-[#F9FAFB]">Waking up the Backend</h2>
+          <p className="text-sm text-[#9CA3AF]">
+            ScaleKit is hosted on Render's free tier, which puts the backend to sleep when not in use.
+          </p>
+          <p className="text-sm text-[#F59E0B] font-medium animate-pulse mt-4 bg-[#F59E0B]/10 p-3 rounded-lg border border-[#F59E0B]/30">
+            Booting up Spring Boot... this can take up to 2 minutes. Please don't refresh!
+          </p>
+        </div>
       </div>
     );
   }
